@@ -29,6 +29,30 @@
                 vertical-align: top;
             }
         </style>
+        <!-- part 3  -->
+        <script>
+            function validateNameForm() {
+                var name = document.getElementById("name").value;
+
+                if (name == ""){
+                    document.getElementById("nameError").innerHTML =
+                    "Name must be filled out"
+                    return false;
+                }
+                if (/\s\s/.test(name)) {
+                    document.getElementById("nameError").innerHTML =
+                    "Only single space inbetween name"
+                    return false;
+                }
+
+                if (/^([A-Z]|[a-z]|\s)*$/.test(name) == false){
+                    document.getElementById("nameError").innerHTML =
+                    "Only alphabet"
+                    return false;
+                }
+                return true;
+            }
+        </script>
     </head>
     <body>
         <!-- part 1 -->
@@ -141,7 +165,7 @@
                 <dd>
                     Plagiarism is treated seriously. If we suspect any work is copied, all students involved are likely to receive zero
                     for the entire assignment. Plagiarism has led to students being expelled from the University.<br>
-                    Please click <a href="https://shorturl.at/UBZXn">here</a> to read more about Plagiarism.
+                    Please click <a href="https://tinyurl.com/uow-plagiarism">here</a> to read more about Plagiarism.
                 </dd>
             <br>
             <dt><b>ACADEMIC CONSIDERATION</b></dt>
@@ -189,7 +213,25 @@
                 Disability Services provide advice and support for students with a disability or health condition. Our aim
                 is to ensure students with a disability realise their full academic potential. We also provide support for those who are
                 the primary carers for those with a medical condition or disability.<br>
-                Please click <a href="https://shorturl.at/A5wiM">here</a> to read more about Disability Services.   
+                Please click <a href="https://tinyurl.com/uow-disability-resources">here</a> to read more about Disability Services.   
             </dd> 
+            <br>
+        
+        <!-- Part 4 -->
+        <h1>Part 4:</h1>
+        <table border="1">
+            <tr>
+                <td>
+                    <form action="LL" method="get"
+                    onSubmit="return validateNameForm()">
+                    Name:
+                    <input id="name" type="text" name="name" size="30">
+                    <span id="nameError"></span>
+                    <br>
+                    <input type="submit">
+                    </form>
+                </td>
+            </tr>
+        </table>
     </body>
 </html>
