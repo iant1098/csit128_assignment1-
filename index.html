@@ -29,28 +29,66 @@
                 vertical-align: top;
             }
         </style>
-        <!-- part 3  -->
+        <!-- part 4  -->
         <script>
-            function validateNameForm() {
-                var name = document.getElementById("name").value;
+            function validateForm() {
+                let name = document.getElementById("name").value;
+                let moduleCode = document.getElementById("moduleCode").value;
+                let isValid = true
+                let message = document.getElementById("message").value
 
-                if (name == ""){
-                    document.getElementById("nameError").innerHTML =
-                    "Name must be filled out"
-                    return false;
-                }
-                if (/\s\s/.test(name)) {
-                    document.getElementById("nameError").innerHTML =
-                    "Only single space inbetween name"
-                    return false;
-                }
+                let tt = document.getElementById("tt")
+                let sourceLanguage = document.getElementsByName("sourceLanguage")
+                let targetLanguage = document.getElementsByName("targetLanguage")
 
-                if (/^([A-Z]|[a-z]|\s)*$/.test(name) == false){
+                if (name.trim() == ""){
+                    document.getElementById("nameError").innerHTML =
+                    "Please enter a name";
+                    isValid = false;
+                }
+                else if (/\s\s/.test(name)) {
+                    document.getElementById("nameError").innerHTML =
+                    "Only single space inbetween name";
+                    isValid = false;
+                }
+                else if (/^([A-Z]|[a-z]|\s)*$/.test(name) == false){
                     document.getElementById("nameError").innerHTML =
                     "Only alphabet"
-                    return false;
+                    isValid = false;
                 }
-                return true;
+                else {document.getElementById("nameError").innerHTML = ""}
+                
+                if (moduleCode.trim() == ""){
+                    document.getElementById("moduleCodeError").innerHTML=
+                    "Please enter the module code";
+                    isValid = false;
+                }
+                else if (/^[A-Z][A-Z][4-8][4-8][4-8]$/.test(moduleCode) == false){
+                    document.getElementById("moduleCodeError").innerHTML=
+                    "Please follow the correct pattern";
+                    isValid = false;
+                }
+                else {document.getElementById("moduleCodeError").innerHTML = ""}
+                if (message.trim() == ""){
+                    document.getElementById("messageError").innerHTML=
+                    "Please enter the message"
+                    inValid = false
+                }
+                else {document.getElementById("messageError").innerHTML = ""};
+
+                if (isValid) {
+                    let ss = "en"
+                    var tl = document.getElementById("targetLanguage");
+                    var text = tl.value
+                    const message = document.getElementById("message").value
+                    for (const lang of sourceLanguage){
+                        if(lang.checked){
+                            ss = lang.value;
+                        }
+                    }        
+                    window.open(`https://translate.google.com/?sl=${ss}&tl=${text}&text=${message}&op=translate`);
+                }
+                return isValid;
             }
         </script>
     </head>
@@ -78,6 +116,7 @@
                 <td>Ian Tan Yi Cher</td>
                 <td>iyctan001@mymail.sim.edu.sg</td>
             </tr>
+                
         </table>
         <!-- Part 2 -->
         <div class="part2">
@@ -224,14 +263,120 @@
         <table border="1">
             <tr>
                 <td>
-                    <form action="LL" method="get"
-                    onSubmit="return validateNameForm()">
+                    <form action="/" id="tt" method="get" 
+                    onSubmit="return validateForm()">
                     Name:
-                    <input id="name" type="text" name="name" size="30">
+                    <input id="name" type="text" name="name" size="35">
                     <span id="nameError"></span>
                     <br>
-                    <input type="submit">
+                    
+                    Module Code:
+                    <input id="moduleCode" type="text" name="moduleCode" size="35">
+                    <span id="moduleCodeError"></span>
+                    <br>
+
+                    Current date:
+                    <input id="date" type="text" name="date" size="35">
+                    <script>
+                        const months = ["January", "February", "March", "April", "May", "June",
+                                        "July", "August", "September", "October", "November", "December"]
+                        const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+                        let date = new Date()
+                        let month = date.getMonth()
+                        let year = date.getFullYear()
+                        let currentDate= date.getDate()
+                        let day = date.getDay() - 1
+                        let hour = date.getHours() % 12
+                        let minute = date.getMinutes()
+                        let twelveHourClock = 12 < hour ? "PM" : "AM"
+                        let current = `${currentDate} ${months[month]} ${year} ${weekdays[day]} ${hour}:${minute} ${twelveHourClock}`
+
+                        document.getElementById("date").value = current
+                    </script>
+                    <br>
+
+                    Message:
+                    <textarea id="message" rows="3" cols="20">Hello 202509</textarea>
+                    <span id="messageError"></span>
+                    <br>
+
+                    Find:
+                    <input id="find" type="text" size="35">
+                    <br>
+
+                    Replace:
+                    <input id="replace" type="text" size="35">
+                    <br>
+                    <input type="button" onclick = "return findAndReplace()" value="Find and replace">
+                    <span id="replacementCount"></span>
+                    
+                    <script>
+                        function findAndReplace(){
+                            let message = document.getElementById("message").value
+                            let find = document.getElementById("find").value
+                            let replacing = document.getElementById("replace").value
+                            let counter = 0
+
+                            let check = message.includes(find);
+                            if (message.trim() == ""){
+                                document.getElementById("messageError").innerHTML=
+                                "Please enter the message"
+                                return false
+                            }
+                            else document.getElementById("messageError").innerHTML= ""
+                            
+                            if (find.trim() == ""){
+                                document.getElementById("replace").disabled = true;
+                            }
+                            else document.getElementById("replace").disabled = false
+
+                            const arrayMessage = message.split(" ")
+                            for(let word of arrayMessage){
+                                if (word === find){
+                                    counter = counter + 1
+                                } 
+                            }
+
+                            if (check == true){
+                                let newMessage = message.replaceAll(find, replacing);
+                                document.getElementById("message").value = newMessage;
+                                document.getElementById("find").value = ""
+                                document.getElementById("replace").value = ""
+                                document.getElementById("replacementCount").innerHTML = `Number of replacement: ${counter}` 
+
+                            }
+                        }
+
+                    </script>
+                    <br>
+
+                    Source Language:
+                    <input type="radio" name="sourceLanguage" value="en">English
+                    <input type="radio" name="sourceLanguage" value="ms">Malay
+                    <br>
+
+                    Target Language:
+                    <select id="targetLanguage">
+                        <option value="zh-CN">Chinese</option>
+                        <option value="ja">Japanese</option>
+                        <option value="ko">Korean</option>
+                    </select>
+                    <br>
+                    <input type="submit" value="Translate">
                     </form>
+
+                    <script>
+                        function googleTranslate(){
+                            let form = document.getElementsByName("sourceLanguage")
+                            for (const lang of form){
+                                if (lang.checked){
+                                    const sourceLanguage = lang.value
+                                    alert(`${sourceLanguage}`)
+                                }
+                            }
+                        }
+                    </script>
                 </td>
             </tr>
         </table>
