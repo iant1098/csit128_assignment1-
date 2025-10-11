@@ -72,7 +72,7 @@
                     "Please enter a name";
                     isValid = false;
                 }
-                else if (/\s\s/.test(name)) {
+                else if (/\s\s/.test(name.trim())) {
                     document.getElementById("nameError").innerHTML =
                     "Only single spacing allowed";
                     isValid = false;
