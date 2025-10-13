@@ -42,30 +42,30 @@
         <script>
             function currentDate() {
                 const months = ["January", "February", "March", "April", "May", "June",
-                                "July", "August", "September", "October", "November", "December"]
-                const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                "July", "August", "September", "October", "November", "December"];
+                const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-                var date = new Date()
-                var month = date.getMonth()
-                var year = date.getFullYear()
-                var currentDate= date.getDate()
-                var day = date.getDay() 
-                var hour = date.getHours() % 12
-                var minute = date.getMinutes()
-                var formatMinute = minute < 10 ? "0" + minute : minute
-                var twelveHourClock = 12 < hour ? "PM" : "AM"
-                var current = `${currentDate} ${months[month]} ${year} ${weekdays[day]} ${hour}:${formatMinute} ${twelveHourClock}`
+                var date = new Date();
+                var month = date.getMonth();
+                var year = date.getFullYear();
+                var currentDate= date.getDate();
+                var day = date.getDay() ;
+                var hour = date.getHours() % 12;
+                var minute = date.getMinutes();
+                var formatMinute = minute < 10 ? "0" + minute : minute;
+                var twelveHourClock = 12 < hour ? "PM" : "AM";
+                var current = `${currentDate} ${months[month]} ${year} ${weekdays[day]} ${hour}:${formatMinute} ${twelveHourClock}`;
 
-                document.getElementById("date").defaultValue = current 
+                document.getElementById("date").defaultValue = current;
             }
 
             function validateForm() {
                 var name = document.getElementById("name").value;
                 var moduleCode = document.getElementById("moduleCode").value;
-                var isValid = true
-                var message = document.getElementById("message").value
+                var isValid = true;
+                var message = document.getElementById("message").value;
 
-                var tt = document.getElementById("tt")
+                var tt = document.getElementById("tt");
                 
                 if (name.trim() == ""){
                     document.getElementById("nameError").innerHTML =
@@ -79,7 +79,7 @@
                 }
                 else if (/^([A-Z]|[a-z]|\s)*$/.test(name) == false){
                     document.getElementById("nameError").innerHTML =
-                    "No special character or number"
+                    "No special character or number";
                     isValid = false;
                 }
                 else {document.getElementById("nameError").innerHTML = ""}
@@ -97,67 +97,68 @@
                 else {document.getElementById("moduleCodeError").innerHTML = ""}
                 if (message.trim() == ""){
                     document.getElementById("messageError").innerHTML=
-                    "Please provide a message"
-                    inValid = false
+                    "Please provide a message";
+                    isValid = false;
                 }
-                else {document.getElementById("messageError").innerHTML = ""};
+                else {document.getElementById("messageError").innerHTML = ""}
 
                 if (isValid) {
                     var tl = document.getElementById("targetLanguage").value;
-                    const message = document.getElementById("message").value
-                    var sourceLanguage = document.getElementsByName("sourceLanguage")
-                    var targetLanguage = document.getElementsByName("targetLanguage")
+                    const message = document.getElementById("message").value;
+                    var sourceLanguage = document.getElementsByName("sourceLanguage");
+                    var targetLanguage = document.getElementsByName("targetLanguage");
 
                     for (const lang of sourceLanguage){
                         if(lang.checked){
                             var sl = lang.value;
                         }
-                    }        
-                    window.open(`https://translate.google.com/?sl=${sl}&tl=${tl}&text=${message}&op=translate`);
+                    }    
+                    
+                    window.open(`https://translate.google.com/?sl=${sl}&tl=${tl}&text=${message}&op=translate`)
+                    return isValid;
                 }
-                return isValid;
             }
 
             function findAndReplace(){
-                var message = document.getElementById("message").value
-                var find = document.getElementById("find").value
-                var replacing = document.getElementById("replace").value
-                var counter = 0
+                var message = document.getElementById("message").value;
+                var find = document.getElementById("find").value;
+                var replacing = document.getElementById("replace").value;
+                var counter = 0;
                 
-                var lowerCaseMessage = message.toLowerCase()
-                var lowerCaseFind = find.toLowerCase()
-                var results = []
+                var lowerCaseMessage = message.toLowerCase();
+                var lowerCaseFind = find.toLowerCase();
+                var results = [];
 
-                const lowerStringsArray = lowerCaseMessage.split(" ")
+                const lowerStringsArray = lowerCaseMessage.split(" ");
                 var check = lowerStringsArray.includes(lowerCaseFind);
                 if (message.trim() == ""){
                     document.getElementById("messageError").innerHTML=
-                    "Please provide a message"
-                    return false
+                    "Please provide a message";
+                    return false;
                 }
-                else document.getElementById("messageError").innerHTML= ""
+                else document.getElementById("messageError").innerHTML= "";
                 
                 if (find.trim() == ""){
                     document.getElementById("replace").disabled = true;
                 }
-                else document.getElementById("replace").disabled = false
+                else document.getElementById("replace").disabled = false;
 
                 const stringsArray = message.split(" ")
                 for(var word of stringsArray){
                     if (word.toLowerCase() == find.toLowerCase()){
-                        counter = counter + 1
-                        results.push(replacing)
+                        counter = counter + 1;
+                        results.push(replacing);
                     } else {
-                        results.push(word)
+                        results.push(word);
                     }
                 }
-                var newMessage = results.join(" ")
+                var newMessage = results.join(" ");
 
                 if (check == true){
                     document.getElementById("message").value = newMessage.trim();
-                    document.getElementById("find").value = ""
-                    document.getElementById("replace").value = ""
-                    document.getElementById("replacementCount").innerHTML = `Number of replacements: ${counter}` 
+                    document.getElementById("find").value = "";
+                    document.getElementById("replace").value = "";
+                    document.getElementById("replacementCount").innerHTML = `Number of replacements: ${counter}` ;
                 }
                 else{document.getElementById("find").value = ""}
             }
@@ -338,8 +339,7 @@
         <table id="partFour" border="1" width= "auto + 2%">
             <tr>
                 <td>
-                    <form action="somewhere" method="get" 
-                    onSubmit="return validateForm()">
+                    <form onSubmit="return validateForm()">
                     Name:
                     <br>
                     <input id="name" type="text" name="name" size="35">
