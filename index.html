@@ -30,142 +30,136 @@
             }
 
             /* Part 4*/
-            #partFour td{
-                padding: 0.5em;
+            p {font-weight: bold; font-size: large;}
+
+            table.HTML_Form {
+                border: 1px solid black;
+                border-collapse: collapse; /*remove double line border*/
             }
 
-            #partFour .error{
-                color: #ff3333;
-            }
+            table.HTML_Form td {padding:10px;}
+
+            table.HTML_Form tr:nth-child(4n) {border-bottom: 1px solid black;} /*adds a border every 4th row*/
+
+            .errorMessage {color: red;}
+
+            .input_text {width:220px;}
         </style>
         <!-- part 4  -->
         <script>
-            function currentDate() {
-                const months = ["January", "February", "March", "April", "May", "June",
-                                "July", "August", "September", "October", "November", "December"];
-                const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            function validateForm(){
 
-                var date = new Date();
-                var month = date.getMonth();
-                var year = date.getFullYear();
-                var currentDate= date.getDate();
-                var day = date.getDay() ;
-                var hour = date.getHours() % 12;
-                var minute = date.getMinutes();
-                var formatMinute = minute < 10 ? "0" + minute : minute;
-                var twelveHourClock = 12 < hour ? "PM" : "AM";
-                var current = `${currentDate} ${months[month]} ${year} ${weekdays[day]} ${hour}:${formatMinute} ${twelveHourClock}`;
+                /* form validation for name text field */
+                var name_ = document.getElementById("Name").value.trim();
+                var modCode = document.getElementById("ModuleCode").value.trim();
 
-                document.getElementById("date").defaultValue = current;
-            }
+                document.getElementById("nameError1").innerHTML = "";
+                document.getElementById("nameError2").innerHTML = "";
+                document.getElementById("modCodeError").innerHTML = "";
 
-            function validateForm() {
-                var name = document.getElementById("name").value;
-                var moduleCode = document.getElementById("moduleCode").value;
-                var isValid = true;
-                var message = document.getElementById("message").value;
+                if(name_ == null || name_ == "")
+                {
+                    document.getElementById("nameError2").innerHTML="Invalid name. Field cannot be empty"
+                    isValid = false;
+                }
 
-                var tt = document.getElementById("tt");
+                else if(/^[A-Za-z ]+$/.test(name_) == false)
+                {
+                    document.getElementById("nameError1").innerHTML="Invalid name. Only letters and spaces are allowed";
+                    isValid = false;
+                }
                 
-                if (name.trim() == ""){
-                    document.getElementById("nameError").innerHTML =
-                    "Please enter a name";
+                if( modCode !== "" && /^[A-Z]{2}[4-8]{3}$/.test(modCode) == false)
+                {
+                    document.getElementById("modCodeError").innerHTML="Invalid module code. Format: 2 letters + 3 digits 4-8"
                     isValid = false;
-                }
-                else if (/\s\s/.test(name.trim())) {
-                    document.getElementById("nameError").innerHTML =
-                    "Only single spacing allowed";
-                    isValid = false;
-                }
-                else if (/^([A-Z]|[a-z]|\s)*$/.test(name) == false){
-                    document.getElementById("nameError").innerHTML =
-                    "No special character or number";
-                    isValid = false;
-                }
-                else {document.getElementById("nameError").innerHTML = ""}
+                } 
+
+                return isValid;
+             }
+
+             function getcurrentDate() 
+             {
+                /*Create a new Date object*/
+                var today = new Date();
+
+                var day = today.getDate();
+                var year = today.getFullYear();
+                var hours = today.getHours();
+                var minutes= today.getMinutes();
+
+                var monthList = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                var monthName = monthList[today.getMonth()];
+
+                var weekdayList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                var weekday = weekdayList[today.getDay()];
+
+                var formatted_minutes = minutes < 10 ? "0" + minutes : minutes;
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12 || 12; /*convert 0 to 12 for midnight*/
+
+                /*Format the date into readable string*/
+                var formattedDate = day + " " +
+                monthName + " " + year + " " + weekday +" "+ hours +":"+ 
+                formatted_minutes +" "+ ampm
                 
-                if (moduleCode.trim() == ""){
-                    document.getElementById("moduleCodeError").innerHTML=
-                    "Please enter the module code";
-                    isValid = false;
-                }
-                else if (/^[A-Z][A-Z][4-8][4-8][4-8]$/.test(moduleCode) == false){
-                    document.getElementById("moduleCodeError").innerHTML=
-                    "Please match the format: 2 uppercase + 3 digits (4-8). Example: AB456";
-                    isValid = false;
-                }
-                else {document.getElementById("moduleCodeError").innerHTML = ""}
-                if (message.trim() == ""){
-                    document.getElementById("messageError").innerHTML=
-                    "Please provide a message";
-                    isValid = false;
-                }
-                else {document.getElementById("messageError").innerHTML = ""}
+                document.getElementById("currentDate").defaultValue = formattedDate;
+             }
 
-                if (isValid) {
-                    var tl = document.getElementById("targetLanguage").value;
-                    const message = document.getElementById("message").value;
-                    var sourceLanguage = document.getElementsByName("sourceLanguage");
-                    var targetLanguage = document.getElementsByName("targetLanguage");
+             function findAndReplace() {
+                var findInput = document.getElementById("find");
+                var replaceInput = document.getElementById("replace");
+                var textArea = document.getElementById("comments");
+                var replaceResult = document.getElementById("replaceResult");
+                var findReplaceBtn = document.getElementById("findReplaceBtn");
 
-                    for (const lang of sourceLanguage){
-                        if(lang.checked){
-                            var sl = lang.value;
-                        }
-                    }    
-                    
-                    window.open(`https://translate.google.com/?sl=${sl}&tl=${tl}&text=${message}&op=translate`)
-                    return isValid;
+                /*When user types in the "find" box, enables "replace" box*/
+                findInput.addEventListener("input", function() 
+                {
+                    replaceInput.disabled = (findInput.value.trim() === "");
+                    if (replaceInput.disabled) {
+                        replaceInput.value = "";
+                        replaceResult.textContent = "";
+                    }  
+                });
+                /*Click event for Find & Replace button*/
+                findReplaceBtn.addEventListener("click", function() {
+                var findText = findInput.value.trim();
+                var replaceText = replaceInput.value;
+                var message = textArea.value;
+
+                if (findText === "") {
+                    return;
                 }
-            }
 
-            function findAndReplace(){
-                var message = document.getElementById("message").value;
-                var find = document.getElementById("find").value;
-                var replacing = document.getElementById("replace").value;
-                var counter = 0;
-                
-                var lowerCaseMessage = message.toLowerCase();
-                var lowerCaseFind = find.toLowerCase();
-                var results = [];
+                if (message.includes(findText)) {
+                    /*Replace all keywords using replaceAll*/
+                    var newMessage = message.replaceAll(findText, replaceText);
 
-                const lowerStringsArray = lowerCaseMessage.split(" ");
-                var check = lowerStringsArray.includes(lowerCaseFind);
-                if (message.trim() == ""){
-                    document.getElementById("messageError").innerHTML=
-                    "Please provide a message";
-                    return false;
+                    /* Count replacements */
+                    var matchCount = (message.split(findText).length - 1);
+
+                    /* Update textarea and result message */
+                    textArea.value = newMessage;
+                    replaceResult.textContent = `${matchCount} replacement made.`;
+                } 
+                else 
+                {
+                    replaceResult.textContent = "No matches found.";
                 }
-                else document.getElementById("messageError").innerHTML= "";
-                
-                if (find.trim() == ""){
-                    document.getElementById("replace").disabled = true;
-                }
-                else document.getElementById("replace").disabled = false;
+                });
+            };
 
-                const stringsArray = message.split(" ")
-                for(var word of stringsArray){
-                    if (word.toLowerCase() == find.toLowerCase()){
-                        counter = counter + 1;
-                        results.push(replacing);
-                    } else {
-                        results.push(word);
-                    }
-                }
-                var newMessage = results.join(" ");
-
-                if (check == true){
-                    document.getElementById("message").value = newMessage.trim();
-                    document.getElementById("find").value = "";
-                    document.getElementById("replace").value = "";
-                    document.getElementById("replacementCount").innerHTML = `Number of replacements: ${counter}` ;
-                }
-                else{document.getElementById("find").value = ""}
-            }
-
-            function openReplaceBox(){
-                document.getElementById("replace").disabled = false;
-            }
+            function translate() {
+                document.getElementById("Translate").addEventListener("click", function() {
+                    var sourceLang = document.querySelector('input[name="sourceLanguage"]:checked').value
+                    var targetLang = document.getElementById("targetLanguage").value;
+                    var message = document.getElementById("comments").value.trim();
+                    var encodedMessage = encodeURIComponent(message);
+                    var url = `https://translate.google.com/?sl=${sourceLang}&tl=${targetLang}&text=${encodedMessage}&op=translate`;
+                    window.open(url, "_blank");
+                });
+            };
         </script>
     </head>
     <body>
@@ -336,69 +330,111 @@
             <br>
         
         <!-- Part 4 -->
-        <h1>Part 4:</h1>
-        <table id="partFour" border="1" width= "auto + 2%">
-            <tr>
-                <td>
-                    <form onSubmit="return validateForm()">
-                    Name:
-                    <br>
-                    <input id="name" type="text" name="name" size="35">
-                    <span id="nameError" class="error"></span>
-                    <br>
+        <form onsubmit="return validateForm()">
+                <table class="HTML_Form">
+                    <tr>
+                        <td colspan="2">
+                            <p>Part 4:</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="Name">Name:</label><br>
+                        </td>
+                        <td>
+                            <input type="text" name="Name" id="Name" class="input_text">
+                            <span id="nameError1" class="errorMessage"></span>
+                            <span id="nameError2" class="errorMessage"></span>
+                        </td>
+                    </tr> 
                     
-                    Module Code:
-                    <br>
-                    <input id="moduleCode" type="text" name="moduleCode" size="35">
-                    <span id="moduleCodeError" class="error"></span>
-                    <br>
+                    <tr>
+                        <td>
+                            <label for="moduleCode">Module Code:</label>
+                        </td>
+                        <td>
+                            <input type="text" name="ModuleCode" id="ModuleCode" class="input_text">
+                            <span id="modCodeError" class="errorMessage"></span>
+                            <br />
+                        </td>
+                    </tr>
 
-                    Current date:
-                    <br>
-                    <input id="date" type="text" name="date" size="35" readonly>
-                    <script>
-                        currentDate();
-                    </script>
-                    <br><br>
+                    <tr>
+                        <td>
+                            <label for="currentDate">Current Date:</label>
+                        </td>
+                        <td>
+                            <input type="text" id="currentDate" readonly class="input_text">
+                            <script>
+                                getcurrentDate()
+                            </script>
+                        </td>
+                    </tr>
 
-                    Message:
-                    <br>
-                    <textarea id="message" rows="3" cols="20">Hello 202509</textarea>
-                    <span id="messageError" class="error"></span>
-                    <br>
+                    <tr>
+                        <td>
+                            <label for="message">Message:</label>
+                        </td>
 
-                    Find:
-                    <br>
-                    <input id="find" type="text" onclick="openReplaceBox()" size="35">
-                    <br>
+                        <td>
+                            <textarea name="comments" id="comments" rows="3" cols="20">Hello 202509</textarea>
+                        </td>
+                    </tr>
 
-                    Replace:
-                    <br>
-                    <input id="replace" type="text" size="35">
-                    <br>
-                    <input type="button" onclick = "return findAndReplace()" value="Find and replace">
-                    <span id="replacementCount"></span>
-                    <br><br>
+                    <tr>
+                        <td>
+                            <label for="find">Find:</label>
+                        </td>
+                        <td>
+                            <input type="text" name="find" id="find">
+                        </td>
+                    </tr>
 
-                    Source Language:
-                    <input type="radio" name="sourceLanguage" value="en" checked>English
-                    <input type="radio" name="sourceLanguage" value="ms">Malay
-                    <br>
-
-                    Target Language:
-                    <select id="targetLanguage">
-                        <option value="zh-CN" selected>Chinese</option>
-                        <option value="ja">Japanese</option>
-                        <option value="ko">Korean</option>
-                    </select>
-                    <br>
-
-                    <button type="submit">Translate</button>
-                    <br><br>
-                    <input type="reset">
-                    </form>
-                </td>
-            </tr>
-        </table>
+                    <tr>
+                        <td>
+                            <label for="replace">Replace:</label>
+                        </td>
+                        <td>
+                            <input type="text" name="replace" id="replace" disabled>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button id="findReplaceBtn">Find & Replace</button>
+                            <span id="replaceResult" class="errorMessage"></span>
+                            <script>findAndReplace();</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="sourceLanguage">Source Language:</label>
+                        </td>
+                        <td>
+                            <input type="radio" name="sourceLanguage" value="en" checked>English
+                            <input type="radio" name="sourceLanguage" value="ms">Malay
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="targetLanguage">Target Language:</label>
+                        </td>
+                        <td>
+                            <select id="targetLanguage">
+                                <option value="zh-CN" selected>Chinese</option>
+                                <option value="ko">Korean</option>
+                                <option value="ja">Japanese</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" id="Translate" value="Translate">
+                            <input type="reset" value="reset">
+                            <script>translate();</script>
+                        </td>
+                    </tr>
+                </table>
+        </form>
     </body>
 </html>
